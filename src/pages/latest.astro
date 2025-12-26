@@ -1,0 +1,14 @@
+---
+// Serve the JSONLT specification as a standalone HTML page
+// The spec HTML is pre-built by Bikeshed and copied to public/latest/index.html
+// We use fetch to get it from the static files, which works in both dev and Cloudflare Workers
+const specUrl = new URL("/latest/index.html", Astro.url);
+const response = await fetch(specUrl);
+const specHtml = await response.text();
+
+return new Response(specHtml, {
+  headers: {
+    "Content-Type": "text/html; charset=utf-8",
+  },
+});
+---

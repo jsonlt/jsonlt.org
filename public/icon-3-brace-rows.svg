@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .logo { fill: #0d9488; }
+      @media (prefers-color-scheme: dark) {
+        .logo { fill: #2dd4bf; }
+      }
+    </style>
+  </defs>
+  
+  <!-- Option 3: Single left brace with table rows (asymmetric mark) -->
+  
+  <!-- Left brace -->
+  <text class="logo" x="2" y="46" font-family="ui-monospace, monospace" font-size="56" font-weight="400" text-anchor="start">{</text>
+  
+  <!-- Table rows extending from brace -->
+  <rect class="logo" x="28" y="16" width="30" height="8" rx="1"/>
+  <rect class="logo" x="28" y="28" width="30" height="8" rx="1"/>
+  <rect class="logo" x="28" y="40" width="30" height="8" rx="1"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .logo { fill: #0d9488; }
+      @media (prefers-color-scheme: dark) {
+        .logo { fill: #2dd4bf; }
+      }
+    </style>
+  </defs>
+  
+  <!-- Braces + Lines - refined alignment -->
+  
+  <!-- Curly braces anchored to edges -->
+  <text class="logo" x="4" y="44" font-family="ui-monospace, monospace" font-size="44" font-weight="400" text-anchor="start">{</text>
+  <text class="logo" x="60" y="44" font-family="ui-monospace, monospace" font-size="44" font-weight="400" text-anchor="end">}</text>
+  
+  <!-- Three lines centered between braces, vertically centered -->
+  <rect class="logo" x="20" y="22" width="24" height="5" rx="1"/>
+  <rect class="logo" x="20" y="30" width="24" height="5" rx="1"/>
+  <rect class="logo" x="20" y="38" width="24" height="5" rx="1"/>
+</svg>

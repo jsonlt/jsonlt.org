@@ -1,0 +1,898 @@
+---
+import "../styles/global.css";
+
+// URLs for docs and spec
+const docsUrl = "/docs";
+const specUrl = "/specification";
+
+const implementations = [
+	{
+		name: "Python",
+		icon: "/icons/python.svg",
+		status: "in-development",
+		url: "https://github.com/jsonlt/jsonlt-python",
+		description: "Reference implementation",
+	},
+	{ name: "Go", icon: "/icons/go.svg", status: "planned" },
+	{ name: "JavaScript", icon: "/icons/javascript.svg", status: "planned" },
+	{ name: "Ruby", icon: "/icons/ruby.svg", status: "planned" },
+	{ name: "Rust", icon: "/icons/rust.svg", status: "planned" },
+];
+---
+
+<html lang="en">
+	<head>
+		<script is:inline>
+			// FOUC prevention - must run before stylesheets
+			(function() {
+				try {
+					var theme = localStorage.getItem("theme");
+				} catch (e) {
+					var theme = null; // localStorage unavailable
+				}
+				var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+				var effectiveTheme = (theme === "dark" || (theme !== "light" && prefersDark)) ? "dark" : "light";
+				document.documentElement.classList.add(effectiveTheme);
+			})();
+		</script>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta
+			name="description"
+			content="JSONLT is a format for storing keyed records in append-only files using JSON Lines. Optimized for human readability and version control diffs."
+		/>
+		<title>JSONLT — JSON Lines Table</title>
+
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+
+	<body class="min-h-screen">
+		<!-- Header -->
+		<header
+			class="animate-fade-in border-b border-gray-200 bg-gray-50/80 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/80"
+		>
+			<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+				<a href="/" class="flex items-center gap-3">
+					<img src="/logo.svg" alt="JSONLT" class="h-8 w-8" />
+					<span class="text-xl font-semibold text-gray-900 dark:text-gray-100"
+						>JSONLT</span
+					>
+				</a>
+				<nav class="flex items-center gap-6">
+					<a
+						href={docsUrl}
+						class="text-sm font-medium text-gray-600 transition-colors hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+						>Docs</a
+					>
+					<a
+						href={specUrl}
+						class="text-sm font-medium text-gray-600 transition-colors hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+						>Spec</a
+					>
+					<a
+						href="https://github.com/jsonlt"
+						class="text-sm font-medium text-gray-600 transition-colors hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+						>GitHub</a
+					>
+				</nav>
+			</div>
+		</header>
+
+		<main>
+			<!-- Hero -->
+			<section class="px-6 py-24 text-center">
+				<div class="mx-auto max-w-4xl">
+					<img
+						src="/logo.svg"
+						alt=""
+						class="animate-fade-in-up mx-auto mb-8 h-24 w-24"
+						aria-hidden="true"
+					/>
+					<h1
+						class="animate-fade-in-up delay-100 mb-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-gray-50"
+					>
+						Keyed records that diff cleanly
+					</h1>
+					<p
+						class="animate-fade-in-up delay-200 mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-gray-600 dark:text-gray-400"
+					>
+						JSONLT is a format for storing keyed records in append-only files
+						using JSON Lines. Optimized for human readability and version
+						control diffs.
+					</p>
+					<div class="animate-fade-in-up delay-300 flex flex-wrap justify-center gap-4">
+						<a
+							href={docsUrl}
+							class="inline-flex items-center rounded bg-accent-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-accent-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:focus:ring-offset-gray-950"
+						>
+							Read the docs
+							<svg
+								class="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+							</svg>
+						</a>
+						<a
+							href={specUrl}
+							class="inline-flex items-center rounded border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:focus:ring-offset-gray-950"
+						>
+							View the spec
+						</a>
+					</div>
+				</div>
+			</section>
+
+			<!-- What is JSONLT? -->
+			<section class="px-6 py-20">
+				<div class="mx-auto max-w-5xl">
+					<h2
+						class="mb-4 text-center text-2xl font-bold text-gray-900 sm:text-3xl dark:text-gray-50"
+					>
+						What is JSONLT?
+					</h2>
+					<p
+						class="mx-auto mb-12 max-w-3xl text-center text-gray-600 dark:text-gray-400"
+					>
+						JSONLT (JSON Lines Table) is a data format for storing collections of records.
+						Each line is a standalone JSON object representing one record, and every record
+						has a key field that uniquely identifies it. To update a record, append a new
+						version—the last entry for each key wins.
+					</p>
+
+					<!-- File example with annotation -->
+					<div class="grid gap-8 lg:grid-cols-2">
+						<!-- Code example -->
+						<div
+							class="flex flex-col overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+						>
+							<div
+								class="border-b border-gray-200 bg-gray-50 px-4 py-2 font-mono text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+							>
+								users.jsonlt
+							</div>
+							<pre
+								class="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm"><code class="text-gray-600 dark:text-gray-400">{`{"id": "alice", "name": "Alice", "role": "admin"}
+{"id": "bob", "name": "Bob", "role": "user"}
+`}</code><code class="text-accent-600 dark:text-accent-400">{`{"id": "alice", "name": "Alice Chen", "role": "admin"}`}</code></pre>
+						</div>
+
+						<!-- Annotation -->
+						<div
+							class="flex flex-col justify-center rounded border border-gray-200 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800"
+						>
+							<p class="text-gray-600 dark:text-gray-400">
+								Alice updated her name. The original line stays; the new version
+								appends. When read, <code class="rounded bg-gray-200 px-1.5 py-0.5 font-mono text-sm dark:bg-gray-700">"alice"</code>
+								resolves to the latest entry.
+							</p>
+						</div>
+					</div>
+
+					<!-- Key concepts -->
+					<div class="mt-12 grid gap-6 sm:grid-cols-3">
+						<div class="text-center">
+							<h3 class="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+								Keyed
+							</h3>
+							<p class="text-sm text-gray-600 dark:text-gray-400">
+								Each record has a unique identifier field
+							</p>
+						</div>
+						<div class="text-center">
+							<h3 class="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+								Append-only
+							</h3>
+							<p class="text-sm text-gray-600 dark:text-gray-400">
+								Changes add new lines, never modify existing ones
+							</p>
+						</div>
+						<div class="text-center">
+							<h3 class="mb-2 font-semibold text-gray-900 dark:text-gray-100">
+								Last wins
+							</h3>
+							<p class="text-sm text-gray-600 dark:text-gray-400">
+								The most recent entry for a key is the current value
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Why append-only wins -->
+			<section class="bg-solid bg-gray-100 px-6 py-20 dark:bg-gray-900">
+				<div class="mx-auto max-w-5xl">
+					<h2
+						class="mb-4 text-center text-2xl font-bold text-gray-900 sm:text-3xl dark:text-gray-50"
+					>
+						Why append-only wins
+					</h2>
+					<p
+						class="mx-auto mb-12 max-w-2xl text-center text-gray-600 dark:text-gray-400"
+					>
+						Three real scenarios where JSONLT's append-only design solves version control headaches.
+					</p>
+
+					<!-- Scenario 1: Git Blame -->
+					<div class="mb-12">
+						<h3 class="mb-2 text-xl font-semibold text-accent-600 dark:text-accent-400">
+							1. Git blame stays accurate
+						</h3>
+						<p class="mb-6 text-gray-600 dark:text-gray-400">
+							When lines shift in a JSON array, blame points to whoever caused the shift—not the original author.
+						</p>
+
+						<div class="grid gap-6 lg:grid-cols-2">
+							<!-- Traditional JSON -->
+							<div class="flex flex-col">
+								<div
+									class="mb-3 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400"
+								>
+									<span>Traditional JSON</span>
+									<span
+										class="rounded bg-red-100 px-2 py-0.5 text-xs text-red-700 dark:bg-red-900/30 dark:text-red-400"
+										>Blame breaks</span
+									>
+								</div>
+								<div
+									class="flex flex-1 flex-col overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+								>
+									<div
+										class="border-b border-gray-200 bg-gray-50 px-4 py-2 font-mono text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+									>
+										git blame users.json
+									</div>
+									<pre
+										class="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm"><code class="text-gray-600 dark:text-gray-400">{`abc123 (Alice) | {
+abc123 (Alice) | "users": [`}</code>
+<code class="text-red-700 dark:text-red-400">{`def456 (Dave)  |   {"id": "alice", "role": "admin"}`}   <span class="text-gray-400 dark:text-gray-500">{`<- wrong!`}</span></code>
+<code class="text-gray-600 dark:text-gray-400">{`def456 (Dave)  |   {"id": "carol", "role": "user"}`}</code>
+<code class="text-red-700 dark:text-red-400">{`def456 (Dave)  |   {"id": "bob", "role": "user"}`}      <span class="text-gray-400 dark:text-gray-500">{`<- wrong!`}</span></code>
+<code class="text-gray-600 dark:text-gray-400">{`abc123 (Alice) | ]
+abc123 (Alice) | }`}</code></pre>
+								</div>
+								<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+									Dave added carol. Now blame says Dave authored alice and bob too.
+								</p>
+							</div>
+
+							<!-- JSONLT -->
+							<div class="flex flex-col">
+								<div
+									class="mb-3 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400"
+								>
+									<span>JSONLT</span>
+									<span
+										class="rounded bg-green-100 px-2 py-0.5 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-400"
+										>Clean history</span
+									>
+								</div>
+								<div
+									class="flex flex-1 flex-col overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+								>
+									<div
+										class="border-b border-gray-200 bg-gray-50 px-4 py-2 font-mono text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+									>
+										git blame users.jsonlt
+									</div>
+									<pre
+										class="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm"><code class="text-gray-600 dark:text-gray-400">{`abc123 (Alice) | {"id": "alice", "role": "admin"}
+abc123 (Alice) | {"id": "bob", "role": "user"}
+def456 (Dave)  | {"id": "carol", "role": "user"}`}</code></pre>
+								</div>
+								<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+									Dave's addition appends. Alice's records keep their attribution.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Scenario 2: Merge Conflicts -->
+					<div class="mb-12">
+						<h3 class="mb-2 text-xl font-semibold text-accent-600 dark:text-accent-400">
+							2. Merge conflicts disappear
+						</h3>
+						<p class="mb-6 text-gray-600 dark:text-gray-400">
+							Two developers edit different records. In JSON arrays, this often causes conflicts. In JSONLT, both just append.
+						</p>
+
+						<div class="grid gap-6 lg:grid-cols-2">
+							<!-- Traditional JSON -->
+							<div class="flex flex-col">
+								<div
+									class="mb-3 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400"
+								>
+									<span>Traditional JSON</span>
+									<span
+										class="rounded bg-red-100 px-2 py-0.5 text-xs text-red-700 dark:bg-red-900/30 dark:text-red-400"
+										>Conflict</span
+									>
+								</div>
+								<div
+									class="flex flex-1 flex-col overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+								>
+									<div
+										class="border-b border-gray-200 bg-gray-50 px-4 py-2 font-mono text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+									>
+										settings.json
+									</div>
+									<pre
+										class="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm"><code class="text-gray-600 dark:text-gray-400">{`{
+  "settings": [`}</code>
+<code class="text-red-700 dark:text-red-400">{`<<<<<<< HEAD`}</code>
+<code class="text-gray-600 dark:text-gray-400">{`    {"key": "theme", "val": "dark"},
+    {"key": "lang", "val": "en"}`}</code>
+<code class="text-red-700 dark:text-red-400">{`=======`}</code>
+<code class="text-gray-600 dark:text-gray-400">{`    {"key": "theme", "val": "light"},
+    {"key": "lang", "val": "fr"}`}</code>
+<code class="text-red-700 dark:text-red-400">{`>>>>>>> feature`}</code>
+<code class="text-gray-600 dark:text-gray-400">{`  ]
+}`}</code></pre>
+								</div>
+								<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+									Alice changed theme, Bob changed lang. Manual resolution required.
+								</p>
+							</div>
+
+							<!-- JSONLT -->
+							<div class="flex flex-col">
+								<div
+									class="mb-3 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400"
+								>
+									<span>JSONLT</span>
+									<span
+										class="rounded bg-green-100 px-2 py-0.5 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-400"
+										>Auto-merges</span
+									>
+								</div>
+								<div
+									class="flex flex-1 flex-col overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+								>
+									<div
+										class="border-b border-gray-200 bg-gray-50 px-4 py-2 font-mono text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+									>
+										settings.jsonlt (after merge)
+									</div>
+									<pre
+										class="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm"><code class="text-gray-600 dark:text-gray-400">{`{"key": "theme", "val": "light"}
+{"key": "lang", "val": "en"}`}</code>
+<code class="text-green-700 dark:text-green-400">{`{"key": "theme", "val": "dark"}`}    <span class="text-gray-400 dark:text-gray-500">{`<- Alice`}</span></code>
+<code class="text-green-700 dark:text-green-400">{`{"key": "lang", "val": "fr"}`}       <span class="text-gray-400 dark:text-gray-500">{`<- Bob`}</span></code></pre>
+								</div>
+								<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+									Both changes append to different lines. Git merges automatically.
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Scenario 3: Diff Noise -->
+					<div>
+						<h3 class="mb-2 text-xl font-semibold text-accent-600 dark:text-accent-400">
+							3. Minimal diff noise
+						</h3>
+						<p class="mb-6 text-gray-600 dark:text-gray-400">
+							Adding a record to a JSON array changes multiple lines. JSONLT diffs show only what you added.
+						</p>
+
+						<div class="grid gap-6 lg:grid-cols-2">
+							<!-- Traditional JSON -->
+							<div class="flex flex-col">
+								<div
+									class="mb-3 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400"
+								>
+									<span>Traditional JSON</span>
+									<span
+										class="rounded bg-red-100 px-2 py-0.5 text-xs text-red-700 dark:bg-red-900/30 dark:text-red-400"
+										>Noisy diff</span
+									>
+								</div>
+								<div
+									class="flex flex-1 flex-col overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+								>
+									<div
+										class="border-b border-gray-200 bg-gray-50 px-4 py-2 font-mono text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+									>
+										products.json
+									</div>
+									<pre
+										class="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm"><code class="text-gray-600 dark:text-gray-400">{` {
+   "products": [
+     {"sku": "A001", "price": 29.99},`}</code>
+<code class="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">{`-    {"sku": "B002", "price": 49.99}`}</code>
+<code class="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">{`+    {"sku": "B002", "price": 49.99},
++    {"sku": "C003", "price": 19.99}`}</code>
+<code class="text-gray-600 dark:text-gray-400">{`   ]
+ }`}</code></pre>
+								</div>
+								<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+									Adding C003 required changing the previous line's trailing comma.
+								</p>
+							</div>
+
+							<!-- JSONLT -->
+							<div class="flex flex-col">
+								<div
+									class="mb-3 flex items-center justify-between text-sm font-medium text-gray-500 dark:text-gray-400"
+								>
+									<span>JSONLT</span>
+									<span
+										class="rounded bg-green-100 px-2 py-0.5 text-xs text-green-700 dark:bg-green-900/30 dark:text-green-400"
+										>Minimal diff</span
+									>
+								</div>
+								<div
+									class="flex flex-1 flex-col overflow-hidden rounded border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+								>
+									<div
+										class="border-b border-gray-200 bg-gray-50 px-4 py-2 font-mono text-xs text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400"
+									>
+										products.jsonlt
+									</div>
+									<pre
+										class="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm"><code class="text-gray-600 dark:text-gray-400">{` {"sku": "A001", "price": 29.99}
+ {"sku": "B002", "price": 49.99}`}</code>
+<code class="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">{`+{"sku": "C003", "price": 19.99}`}</code></pre>
+								</div>
+								<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+									One line added, one line in the diff. Every time.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Why JSONLT -->
+			<section class="px-6 py-20">
+				<div class="mx-auto max-w-4xl">
+					<h2
+						class="mb-12 text-center text-2xl font-bold text-gray-900 sm:text-3xl dark:text-gray-50"
+					>
+						Why JSONLT?
+					</h2>
+
+					<div class="grid gap-8 sm:grid-cols-2">
+						<div class="rounded-lg bg-gray-100 p-6 dark:bg-gray-900">
+							<div
+								class="mb-4 flex h-10 w-10 items-center justify-center rounded bg-accent-100 dark:bg-accent-900/30"
+							>
+								<svg
+									class="h-5 w-5 text-accent-600 dark:text-accent-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+									></path>
+								</svg>
+							</div>
+							<h3
+								class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100"
+							>
+								Clean version control diffs
+							</h3>
+							<p class="text-gray-600 dark:text-gray-400">
+								Modifications append new lines rather than rewriting existing
+								content. You can see exactly what changed and when in your git
+								history.
+							</p>
+						</div>
+
+						<div class="rounded-lg bg-gray-100 p-6 dark:bg-gray-900">
+							<div
+								class="mb-4 flex h-10 w-10 items-center justify-center rounded bg-accent-100 dark:bg-accent-900/30"
+							>
+								<svg
+									class="h-5 w-5 text-accent-600 dark:text-accent-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+									></path>
+								</svg>
+							</div>
+							<h3
+								class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100"
+							>
+								Human-readable format
+							</h3>
+							<p class="text-gray-600 dark:text-gray-400">
+								Plain text JSON you can read, edit, and grep. No special tools
+								required—works with any text editor and standard Unix utilities.
+							</p>
+						</div>
+
+						<div class="rounded-lg bg-gray-100 p-6 dark:bg-gray-900">
+							<div
+								class="mb-4 flex h-10 w-10 items-center justify-center rounded bg-accent-100 dark:bg-accent-900/30"
+							>
+								<svg
+									class="h-5 w-5 text-accent-600 dark:text-accent-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
+									></path>
+								</svg>
+							</div>
+							<h3
+								class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100"
+							>
+								No infrastructure required
+							</h3>
+							<p class="text-gray-600 dark:text-gray-400">
+								Just files. No database servers to manage, no services to
+								configure. Your data lives alongside your code in version
+								control.
+							</p>
+						</div>
+
+						<div class="rounded-lg bg-gray-100 p-6 dark:bg-gray-900">
+							<div
+								class="mb-4 flex h-10 w-10 items-center justify-center rounded bg-accent-100 dark:bg-accent-900/30"
+							>
+								<svg
+									class="h-5 w-5 text-accent-600 dark:text-accent-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+									></path>
+								</svg>
+							</div>
+							<h3
+								class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100"
+							>
+								Formally specified
+							</h3>
+							<p class="text-gray-600 dark:text-gray-400">
+								A complete specification with conformance profiles, test suites,
+								and reference implementations ensures interoperability across
+								languages.
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Code Example -->
+			<section class="bg-solid bg-gray-100 px-6 py-20 dark:bg-gray-900">
+				<div class="mx-auto max-w-4xl">
+					<h2
+						class="mb-4 text-center text-2xl font-bold text-gray-900 sm:text-3xl dark:text-gray-50"
+					>
+						Simple to use
+					</h2>
+					<p
+						class="mx-auto mb-10 max-w-2xl text-center text-gray-600 dark:text-gray-400"
+					>
+						JSONLT implementations provide a familiar key-value interface. Here's
+						how it looks in Python:
+					</p>
+
+					<div
+						class="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+					>
+						<div
+							class="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-900"
+						>
+							<div class="h-3 w-3 rounded-full bg-red-400"></div>
+							<div class="h-3 w-3 rounded-full bg-yellow-400"></div>
+							<div class="h-3 w-3 rounded-full bg-green-400"></div>
+							<span class="ml-2 font-mono text-xs text-gray-500 dark:text-gray-400"
+								>example.py</span
+							>
+						</div>
+						<pre
+							class="overflow-x-auto p-6 font-mono text-sm leading-relaxed"><code
+								><span class="text-purple-600 dark:text-purple-400">from</span> <span class="text-gray-800 dark:text-gray-200">jsonlt</span> <span class="text-purple-600 dark:text-purple-400">import</span> <span class="text-gray-800 dark:text-gray-200">Table</span>
+
+<span class="text-gray-500 dark:text-gray-400"># Open or create a table</span>
+<span class="text-gray-800 dark:text-gray-200">users</span> <span class="text-purple-600 dark:text-purple-400">=</span> <span class="text-gray-800 dark:text-gray-200">Table</span><span class="text-gray-600 dark:text-gray-400">(</span><span class="text-green-600 dark:text-green-400">"users.jsonlt"</span><span class="text-gray-600 dark:text-gray-400">,</span> <span class="text-gray-800 dark:text-gray-200">key</span><span class="text-purple-600 dark:text-purple-400">=</span><span class="text-green-600 dark:text-green-400">"id"</span><span class="text-gray-600 dark:text-gray-400">)</span>
+
+<span class="text-gray-500 dark:text-gray-400"># Insert or update records</span>
+<span class="text-gray-800 dark:text-gray-200">users</span><span class="text-gray-600 dark:text-gray-400">.</span><span class="text-blue-600 dark:text-blue-400">put</span><span class="text-gray-600 dark:text-gray-400">({"{"}</span><span class="text-green-600 dark:text-green-400">"id"</span><span class="text-gray-600 dark:text-gray-400">:</span> <span class="text-green-600 dark:text-green-400">"alice"</span><span class="text-gray-600 dark:text-gray-400">,</span> <span class="text-green-600 dark:text-green-400">"name"</span><span class="text-gray-600 dark:text-gray-400">:</span> <span class="text-green-600 dark:text-green-400">"Alice"</span><span class="text-gray-600 dark:text-gray-400">,</span> <span class="text-green-600 dark:text-green-400">"role"</span><span class="text-gray-600 dark:text-gray-400">:</span> <span class="text-green-600 dark:text-green-400">"admin"</span><span class="text-gray-600 dark:text-gray-400">{"}"})</span>
+<span class="text-gray-800 dark:text-gray-200">users</span><span class="text-gray-600 dark:text-gray-400">.</span><span class="text-blue-600 dark:text-blue-400">put</span><span class="text-gray-600 dark:text-gray-400">({"{"}</span><span class="text-green-600 dark:text-green-400">"id"</span><span class="text-gray-600 dark:text-gray-400">:</span> <span class="text-green-600 dark:text-green-400">"bob"</span><span class="text-gray-600 dark:text-gray-400">,</span> <span class="text-green-600 dark:text-green-400">"name"</span><span class="text-gray-600 dark:text-gray-400">:</span> <span class="text-green-600 dark:text-green-400">"Bob"</span><span class="text-gray-600 dark:text-gray-400">,</span> <span class="text-green-600 dark:text-green-400">"role"</span><span class="text-gray-600 dark:text-gray-400">:</span> <span class="text-green-600 dark:text-green-400">"user"</span><span class="text-gray-600 dark:text-gray-400">{"}"})</span>
+
+<span class="text-gray-500 dark:text-gray-400"># Retrieve a record</span>
+<span class="text-gray-800 dark:text-gray-200">alice</span> <span class="text-purple-600 dark:text-purple-400">=</span> <span class="text-gray-800 dark:text-gray-200">users</span><span class="text-gray-600 dark:text-gray-400">.</span><span class="text-blue-600 dark:text-blue-400">get</span><span class="text-gray-600 dark:text-gray-400">(</span><span class="text-green-600 dark:text-green-400">"alice"</span><span class="text-gray-600 dark:text-gray-400">)</span>
+<span class="text-purple-600 dark:text-purple-400">print</span><span class="text-gray-600 dark:text-gray-400">(</span><span class="text-gray-800 dark:text-gray-200">alice</span><span class="text-gray-600 dark:text-gray-400">[</span><span class="text-green-600 dark:text-green-400">"role"</span><span class="text-gray-600 dark:text-gray-400">])</span>  <span class="text-gray-500 dark:text-gray-400"># "admin"</span>
+
+<span class="text-gray-500 dark:text-gray-400"># Delete a record</span>
+<span class="text-gray-800 dark:text-gray-200">users</span><span class="text-gray-600 dark:text-gray-400">.</span><span class="text-blue-600 dark:text-blue-400">delete</span><span class="text-gray-600 dark:text-gray-400">(</span><span class="text-green-600 dark:text-green-400">"bob"</span><span class="text-gray-600 dark:text-gray-400">)</span></code></pre>
+					</div>
+				</div>
+			</section>
+
+			<!-- Implementations -->
+			<section class="px-6 py-20">
+				<div class="mx-auto max-w-4xl">
+					<h2
+						class="mb-4 text-center text-2xl font-bold text-gray-900 sm:text-3xl dark:text-gray-50"
+					>
+						Implementations
+					</h2>
+					<p
+						class="mx-auto mb-10 max-w-2xl text-center text-gray-600 dark:text-gray-400"
+					>
+						The JSONLT project maintains reference implementations that
+						demonstrate spec-conformant behavior and serve as test beds for the
+						conformance suite.
+					</p>
+
+					<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{
+							implementations.map((impl) => (
+								<div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+									<div class="mb-3 flex items-center justify-between">
+										<div class="flex items-center gap-2">
+											{impl.icon && (
+												<img
+													src={impl.icon}
+													alt=""
+													class="h-6 w-6 dark:invert dark:brightness-90"
+													aria-hidden="true"
+												/>
+											)}
+											<span class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+												{impl.name}
+											</span>
+										</div>
+										{impl.status === "in-development" ? (
+											<span class="rounded bg-accent-100 px-2 py-0.5 text-xs font-medium text-accent-700 dark:bg-accent-900/30 dark:text-accent-400">
+												In development
+											</span>
+										) : (
+											<span class="rounded bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+												Planned
+											</span>
+										)}
+									</div>
+									{impl.description && (
+										<p class="mb-3 text-sm text-gray-600 dark:text-gray-400">
+											{impl.description}
+										</p>
+									)}
+									{impl.url && (
+										<a
+											href={impl.url}
+											class="inline-flex items-center text-sm font-medium text-accent-600 hover:text-accent-700 dark:text-accent-400 dark:hover:text-accent-300"
+										>
+											View on GitHub
+											<svg
+												class="ml-1 h-4 w-4"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+												/>
+											</svg>
+										</a>
+									)}
+								</div>
+							))
+						}
+
+						<!-- Contribute card -->
+						<div
+							class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-5 text-center dark:border-gray-600 dark:bg-gray-900"
+						>
+							<p class="mb-2 text-sm text-gray-600 dark:text-gray-400">
+								Interested in contributing?
+							</p>
+							<a
+								href="https://github.com/jsonlt/jsonlt/discussions"
+								class="text-sm font-medium text-accent-600 hover:text-accent-700 dark:text-accent-400 dark:hover:text-accent-300"
+							>
+								Join the discussion →
+							</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Resources -->
+			<section class="bg-solid bg-gray-100 px-6 py-20 dark:bg-gray-900">
+				<div class="mx-auto max-w-4xl">
+					<h2
+						class="mb-10 text-center text-2xl font-bold text-gray-900 sm:text-3xl dark:text-gray-50"
+					>
+						Resources
+					</h2>
+
+					<div class="grid gap-6 sm:grid-cols-3">
+						<a
+							href={specUrl}
+							class="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-accent-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:border-accent-700"
+						>
+							<div
+								class="mb-4 flex h-12 w-12 items-center justify-center rounded bg-accent-100 transition-colors group-hover:bg-accent-200 dark:bg-accent-900/30 dark:group-hover:bg-accent-900/50"
+							>
+								<svg
+									class="h-6 w-6 text-accent-600 dark:text-accent-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+									></path>
+								</svg>
+							</div>
+							<h3
+								class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100"
+							>
+								Specification
+							</h3>
+							<p class="text-sm text-gray-600 dark:text-gray-400">
+								The normative spec defining the format, algorithms, and
+								conformance requirements.
+							</p>
+						</a>
+
+						<a
+							href={docsUrl}
+							class="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-accent-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:border-accent-700"
+						>
+							<div
+								class="mb-4 flex h-12 w-12 items-center justify-center rounded bg-accent-100 transition-colors group-hover:bg-accent-200 dark:bg-accent-900/30 dark:group-hover:bg-accent-900/50"
+							>
+								<svg
+									class="h-6 w-6 text-accent-600 dark:text-accent-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+									></path>
+								</svg>
+							</div>
+							<h3
+								class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100"
+							>
+								Documentation
+							</h3>
+							<p class="text-sm text-gray-600 dark:text-gray-400">
+								Guides, tutorials, and API references for using JSONLT in your
+								projects.
+							</p>
+						</a>
+
+						<a
+							href="https://github.com/jsonlt"
+							class="group rounded-lg border border-gray-200 bg-white p-6 transition-all hover:border-accent-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:border-accent-700"
+						>
+							<div
+								class="mb-4 flex h-12 w-12 items-center justify-center rounded bg-accent-100 transition-colors group-hover:bg-accent-200 dark:bg-accent-900/30 dark:group-hover:bg-accent-900/50"
+							>
+								<svg
+									class="h-6 w-6 text-accent-600 dark:text-accent-400"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+										clip-rule="evenodd"></path>
+								</svg>
+							</div>
+							<h3
+								class="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100"
+							>
+								GitHub
+							</h3>
+							<p class="text-sm text-gray-600 dark:text-gray-400">
+								Source code, issue tracker, and community discussions.
+							</p>
+						</a>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<!-- Footer -->
+		<footer class="border-t border-gray-200 px-6 py-12 dark:border-gray-800">
+			<div class="mx-auto max-w-6xl">
+				<div class="flex flex-col items-center justify-between gap-6 sm:flex-row">
+					<div class="flex items-center gap-3">
+						<img src="/logo.svg" alt="" class="h-6 w-6" aria-hidden="true" />
+						<span class="font-semibold text-gray-900 dark:text-gray-100"
+							>JSONLT</span
+						>
+					</div>
+					<nav class="flex flex-wrap justify-center gap-6">
+						<a
+							href={specUrl}
+							class="text-sm text-gray-600 transition-colors hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+							>Specification</a
+						>
+						<a
+							href={docsUrl}
+							class="text-sm text-gray-600 transition-colors hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+							>Documentation</a
+						>
+						<a
+							href="https://github.com/jsonlt"
+							class="text-sm text-gray-600 transition-colors hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+							>GitHub</a
+						>
+						<a
+							href="https://github.com/jsonlt/jsonlt/discussions"
+							class="text-sm text-gray-600 transition-colors hover:text-accent-600 dark:text-gray-400 dark:hover:text-accent-400"
+							>Discussions</a
+						>
+					</nav>
+				</div>
+				<div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+					<p>
+						JSONLT is open source under the
+						<a
+							href="https://github.com/jsonlt/jsonlt/blob/main/LICENSE"
+							class="text-accent-600 hover:text-accent-700 dark:text-accent-400 dark:hover:text-accent-300"
+							>MIT License</a
+						>.
+					</p>
+					<p class="mt-2">
+						Inspired by
+						<a
+							href="https://github.com/steveyegge/beads"
+							class="text-accent-600 hover:text-accent-700 dark:text-accent-400 dark:hover:text-accent-300"
+							>BEADS</a
+						>.
+					</p>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

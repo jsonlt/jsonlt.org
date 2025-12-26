@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .logo { fill: #0d9488; }
+      @media (prefers-color-scheme: dark) {
+        .logo { fill: #2dd4bf; }
+      }
+    </style>
+  </defs>
+  
+  <!-- Option 2: Table grid only (simple, bold) -->
+  
+  <!-- Header row -->
+  <rect class="logo" x="8" y="12" width="48" height="10" rx="2"/>
+  
+  <!-- Data rows -->
+  <rect class="logo" x="8" y="26" width="22" height="10" rx="2"/>
+  <rect class="logo" x="34" y="26" width="22" height="10" rx="2"/>
+  
+  <rect class="logo" x="8" y="40" width="22" height="10" rx="2"/>
+  <rect class="logo" x="34" y="40" width="22" height="10" rx="2"/>
+</svg>

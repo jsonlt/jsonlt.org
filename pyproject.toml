@@ -1,0 +1,11 @@
+[project]
+name = "jsonlt-website"
+version = "0.0.0"
+description = "jsonlt.org website."
+readme = "README.md"
+requires-python = ">=3.14"
+classifiers = ["Private :: Do Not Upload"]
+dependencies = []
+
+[dependency-groups]
+dev = ["vale>=3.13.0.0", "yamllint>=1.37.1"]

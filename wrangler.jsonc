@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": "dist/_worker.js/index.js",
+  "name": "jsonlt-website",
+  "compatibility_date": "2025-12-22",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true
+  },
+
+  // Production routes - deploy to jsonlt.org
+  "routes": [
+    { "pattern": "jsonlt.org", "custom_domain": true },
+    { "pattern": "www.jsonlt.org", "custom_domain": true }
+  ],
+
+  // Preview environment for branch-based deployments
+  // Deploy with: wrangler deploy --env preview
+  // Preview URL: jsonlt-website-preview.<subdomain>.workers.dev
+  // For branch-specific previews in CI, use --name flag:
+  // wrangler deploy --env preview --name jsonlt-website-preview-${BRANCH_NAME}
+  "env": {
+    "preview": {
+      "name": "jsonlt-website-preview",
+      "routes": []
+    }
+  }
+}

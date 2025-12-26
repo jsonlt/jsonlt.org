@@ -1,0 +1,74 @@
+---
+title: JSONLT Documentation
+description: Guides, tutorials, and API references for using JSONLT in your projects.
+template: splash
+hero:
+  tagline: Guides, tutorials, and references for working with JSONLT—a format for storing keyed records in append-only files using JSON Lines.
+  actions:
+    - text: Get started
+      link: /docs/install/
+      icon: right-arrow
+      variant: primary
+    - text: View the spec
+      link: /specification/
+      icon: right-arrow
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Learn JSONLT
+
+<CardGrid>
+  <Card title="Installation" icon="download">
+    Get started with JSONLT in your language of choice.
+
+    [Install now →](/docs/install/)
+  </Card>
+  <Card title="Tutorials" icon="open-book">
+    Step-by-step guides to learn JSONLT from scratch.
+
+    [Start learning →](/docs/tutorials/)
+  </Card>
+  <Card title="Guides" icon="puzzle">
+    Task-oriented guides for common use cases.
+
+    [Explore guides →](/docs/guides/)
+  </Card>
+  <Card title="Reference" icon="document">
+    API documentation and glossary.
+
+    [Browse reference →](/docs/reference/)
+  </Card>
+</CardGrid>
+
+## Implementations
+
+JSONLT is a specification with reference implementations in multiple languages. The Python implementation is currently under active development.
+
+<CardGrid>
+  <Card title="Python" icon="seti:python">
+    **Reference implementation** — In development
+
+    [View on GitHub →](https://github.com/jsonlt/jsonlt-python)
+  </Card>
+  <Card title="More languages" icon="rocket">
+    **Coming soon** — Go, JavaScript, Ruby, Rust
+
+    [Join the discussion →](https://github.com/jsonlt/jsonlt/discussions)
+  </Card>
+</CardGrid>
+
+## Resources
+
+<CardGrid>
+  <LinkCard
+    title="Specification"
+    description="The normative spec defining the format, algorithms, and conformance requirements."
+    href="/specification/"
+  />
+  <LinkCard
+    title="GitHub"
+    description="Source code, issue tracker, and community discussions."
+    href="https://github.com/jsonlt"
+  />
+</CardGrid>
