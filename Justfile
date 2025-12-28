@@ -81,10 +81,6 @@ prek-all:
 preview:
   pnpm preview
 
-# Update spec from jsonlt repo (run just build-spec in ../jsonlt first)
-update-spec:
-  cp ../jsonlt/build/spec/index.html public/latest/index.html
-
 # Sync Vale styles and dictionaries
 vale-sync:
   vale sync
