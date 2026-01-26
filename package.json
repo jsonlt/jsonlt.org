@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.10",
+    "@biomejs/biome": "2.3.12",
     "markdownlint-cli2": "0.20.0",
     "wrangler": "4.56.0"
   },
